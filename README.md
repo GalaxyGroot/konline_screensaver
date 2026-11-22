@@ -150,6 +150,6 @@ To test by hand before enabling auto-download, connect over SSH (USBNet) and run
 
 ## License
 
-MIT. See [LICENSE](LICENSE). Original work by peterson (MobileRead); modifications by GalaxyGroot.
+MIT. See [LICENSE](LICENSE).
 
 Discussion of the original extension: <https://www.mobileread.com/forums/showthread.php?t=236104>
