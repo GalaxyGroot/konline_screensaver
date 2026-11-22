@@ -1,10 +1,28 @@
 # konline_screensaver
 
-A [KUAL](https://www.mobileread.com/forums/showthread.php?t=225030) extension for jailbroken Kindles that downloads fresh sleep-screen images from the internet, either on demand or on a schedule.
+**A fresh sleep screen on your Kindle every day, with no computer involved.**
 
-This is a fork of **Online Screensaver**, extended for **hard-float firmware** (for example 5.18.x) where the `linkss` screensaver hack cannot be installed. It can download a whole folder of images, keep it in sync, and optionally write it into the Kindle's own screensaver folder, with a backup made first.
+konline_screensaver is a [KUAL](https://www.mobileread.com/forums/showthread.php?t=225030) extension for jailbroken Kindles. It downloads a curated set of screensaver images over Wi-Fi, checks every file, and keeps the set up to date. You tap one menu entry, or let it run once a day.
 
-> Use at your own risk. It is tested on a real Kindle only in part (see [Status](#status)). If something goes wrong, restarting the Kindle normally fixes it, and *Restore the original screensavers* undoes system mode.
+### Why this fork
+
+The classic `linkss` screensaver hack cannot be installed on **hard-float firmware** (for example 5.18.x). This fork of *Online Screensaver* works there, and it adds what the original lacked:
+
+- **Whole-folder sync.** It downloads only the images that changed and checks each one by MD5. A failed download never leaves you with a half-updated set.
+- **Your Kindle's own sleep screen.** An optional system mode writes the images into the stock screensaver folder, so no other app is needed.
+- **A safety net.** System mode makes a verified backup of your original screensavers before it writes anything, and one tap in the menu puts them back.
+- **No battery cost by default.** Nothing runs in the background until you switch auto-download on. Then once every 24 hours is enough.
+- **Right size for your screen.** Pick 600x800 or 1072x1448 in one setting.
+
+### In 30 seconds
+
+1. Copy the folder to `/mnt/us/extensions/onlinescreensaver/` on your Kindle.
+2. Open **KUAL > Online-Screensaver > Update now**.
+3. Choose how to show the images (see [below](#make-the-images-appear-on-the-sleep-screen)).
+
+Full steps are in the [Quick start](#quick-start-about-5-minutes).
+
+> **Before you start:** this changes files on your Kindle, so you use it at your own risk. Folder sync and system mode have been tested against a local server and scratch folders, and only partly on a real device (see [Status](#status)). Restarting the Kindle normally fixes any problem, and **Restore the original screensavers** undoes system mode.
 
 ## Credits
 
