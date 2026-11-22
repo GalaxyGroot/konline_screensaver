@@ -13,10 +13,6 @@ This project stands on other people's work. Please keep these credits if you for
 | Who | What |
 |---|---|
 | **peterson** ([MobileRead thread](https://www.mobileread.com/forums/showthread.php?t=236104)) | Wrote the original *Online Screensaver* extension (v0.3) and the scheduler/RTC wake-up logic. All the core ideas are theirs. |
-| **poja1993** | Maintained the fork this repository is based on (Kindle Touch changes, Home Assistant battery webhook). The MIT license is under their name. |
-| **mpetroff**, [kindle-weather-display](https://github.com/mpetroff/kindle-weather-display) | The weather-image project that inspired the original extension. |
-| **sibbl**, [hass-lovelace-kindle-screensaver](https://github.com/sibbl/hass-lovelace-kindle-screensaver) | Home Assistant dashboard images that this extension can display. |
-| **NiLuJe** | The KUAL launcher, `linkss` and the Kindle hacking tools this builds on. |
 | **GalaxyGroot** | This fork: folder sync, system screensaver mode with backup/restore, simple auto-download menu. |
 
 Thanks to the Kindle developer community on MobileRead.
@@ -154,6 +150,6 @@ To test by hand before enabling auto-download, connect over SSH (USBNet) and run
 
 ## License
 
-MIT. See [LICENSE](LICENSE). Original work by peterson (MobileRead) and poja1993; modifications by GalaxyGroot.
+MIT. See [LICENSE](LICENSE). Original work by peterson (MobileRead); modifications by GalaxyGroot.
 
 Discussion of the original extension: <https://www.mobileread.com/forums/showthread.php?t=236104>
