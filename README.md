@@ -112,16 +112,6 @@ The default server publishes a daily pick of 13 images from the [K7Wallpaper](ht
 
 Folder sync and system mode were tested against a local HTTP server and scratch folders with stubbed Kindle commands, and the basic download flow on a real Kindle. System mode has **not** been verified on a device yet. Please report your results by opening an issue.
 
-## Troubleshooting
-
-| Problem | Try |
-|---|---|
-| White or wrong-sized screen | Check size, 8-bit grayscale PNG, no ICC profile; test with `eips -f -g image.png`. |
-| "Update now" does nothing | Set `LOGGING=1`, run again, read `/mnt/us/onlinescreensaver.log`. Check `TEST_DOMAIN` and `SYNC_BASE_URI` are reachable from your network. |
-| Menu entry missing or script fails | Line endings were changed to CRLF. Re-save the files with LF endings. |
-| Old images still show after system mode | Restart the Kindle. |
-| Want the original screens back | *System screensavers > Restore the original screensavers*. |
-
 ## Optional: Home Assistant battery webhook
 
 Set `WEBHOOKADR` in `bin/config.sh`, for example `WEBHOOKADR="<HomeAssistantURL>/api/webhook/kindle-battery-update-hook"`. In Home Assistant `configuration.yaml`:
