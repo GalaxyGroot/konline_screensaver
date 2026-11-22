@@ -1,146 +1,159 @@
-## System screensavers: back up, apply, restore (added for hard-float Kindles)
+# konline_screensaver
 
-`linkss` cannot be installed on hard-float firmware, so this copy can also put the downloaded images **into the Kindle's own screensaver folder**, `/usr/share/blanket/screensaver`, where the normal sleep screen reads them. It is OFF by default (`TARGET_MODE=user`: images only go to the extension's own `downloaded` folder).
+A [KUAL](https://www.mobileread.com/forums/showthread.php?t=225030) extension for jailbroken Kindles that downloads fresh sleep-screen images from the internet, either on demand or on a schedule.
 
-KUAL: *Online-Screensaver > System screensavers*
-- *ON: back up originals, then apply downloads* - makes a verified backup of the original files in `extensions/onlinescreensaver/backup_screensavers/` (nothing is enabled if that fails; an existing complete backup is never overwritten), then turns system mode on. Run *Update now* to apply.
-- *Restore the original screensavers* - puts the original files back, removes the ones that were added, and switches system mode off.
+This is a fork of **Online Screensaver**, extended for **hard-float firmware** (for example 5.18.x) where the `linkss` screensaver hack cannot be installed. It can download a whole folder of images, keep it in sync, and optionally write it into the Kindle's own screensaver folder, with a backup made first.
 
-(`bin/set-target.sh user` and `bin/backup.sh` still exist for manual use but are not in the menu: *ON* already makes the backup, and *Restore* already switches system mode off.)
+> Use at your own risk. It is tested on a real Kindle only in part (see [Status](#status)). If something goes wrong, restarting the Kindle normally fixes it, and *Restore the original screensavers* undoes system mode.
 
-Safety rules in `bin/system.sh`: no write without a verified backup; the system partition is made writable (`mntroot rw`) only when a file really differs, and always set back to read-only; every file is written under a temporary name, MD5-checked, then renamed; free space is checked first; downloaded files must still match `meta.json`; `SYSTEM_DELETE_EXTRA=1` (default) removes older `bg_ss??.png` files that are not part of the new set. After a change the script asks the Kindle to refresh (`refreshScreenSaver`); restart the Kindle if the old images still show. A firmware update can overwrite the system folder (use *Restore*/*Update now* again). Tested only against scratch folders with stubbed Kindle commands, not on a device.
+## Credits
 
-## Folder sync (added for the Kindle 7 + K7Wallpaper repo)
+This project stands on other people's work. Please keep these credits if you fork it.
 
-Besides a single image, this copy can keep a whole folder of screensavers up to date:
+| Who | What |
+|---|---|
+| **peterson** ([MobileRead thread](https://www.mobileread.com/forums/showthread.php?t=236104)) | Wrote the original *Online Screensaver* extension (v0.3) and the scheduler/RTC wake-up logic. All the core ideas are theirs. |
+| **poja1993** | Maintained the fork this repository is based on (Kindle Touch changes, Home Assistant battery webhook). The MIT license is under their name. |
+| **mpetroff**, [kindle-weather-display](https://github.com/mpetroff/kindle-weather-display) | The weather-image project that inspired the original extension. |
+| **sibbl**, [hass-lovelace-kindle-screensaver](https://github.com/sibbl/hass-lovelace-kindle-screensaver) | Home Assistant dashboard images that this extension can display. |
+| **NiLuJe** | The KUAL launcher, `linkss` and the Kindle hacking tools this builds on. |
+| **GalaxyGroot** | This fork: folder sync, system screensaver mode with backup/restore, simple auto-download menu. |
 
-- `bin/sync.sh` downloads `<site>/screensavers/<SYNC_SIZE>/meta.json` (`SYNC_SIZE` in `bin/config.sh`: `1072x1448` for a Paperwhite 3/4 or Kindle 11, `600x800` for a basic Kindle), then every `bg_ssNN.png` in that folder it lists whose MD5 differs from the local file in its own folder `onlinescreensaver/downloaded/` (`SCREENSAVERFOLDER`).
-- Nothing is replaced unless all needed files downloaded and passed the MD5 check, so a failed run never leaves a half-updated set.
-- Set `SYNC_BASE_URI` in `bin/config.sh` (already pointing at `GalaxyGroot/K7Wallpaper`, `main/sync`). When it is set, `IMAGE_URI` is ignored. `SYNC_DELETE_EXTRA=1` also removes `bg_ss??.png` files that are not in `meta.json`.
-- **Auto-download is OFF by default**: nothing runs in the background and images are only fetched when you tap *Update now*. To turn it on, choose *Auto-download: every 24 hours* in KUAL (or a custom number of hours through `bin/auto.conf`) (the GitHub Action publishes a new pick every 24 hours, so once a day is enough). *Auto-download: OFF* turns it off again. For another number of hours, create `bin/auto.conf` containing `AUTO_HOURS=8` (1-168) and run *Auto-download: apply bin/auto.conf*. The choice is stored in `bin/auto.conf`; `scheduler.sh` refuses to run while it is 0, so a scheduler installed earlier also stays off after a reboot.
-- `TEST_DOMAIN` is the host pinged to detect a connection; the default is `www.baidu.com`, change it if that is not reachable for you.
-- The screen is only refreshed when something actually changed. In system mode the Kindle may need a restart before the stock sleep screen uses the new files.
-- Install: copy this folder to `/mnt/us/extensions/onlinescreensaver/` on the Kindle, then use KUAL: *Online-Screensaver > Update now*, or one of the *Auto-download* entries (the first time you pick an interval it installs a startup file into `/etc/upstart`, which needs `mntroot rw`).
+Thanks to the Kindle developer community on MobileRead.
 
-Info
-----
-Original README below. I've just made few modifications to adapt what found here:  
-https://www.mobileread.com/forums/showthread.php?t=236104  
-to have it running in my old Kindle Touch.
-In particular:
-- Changed RTC=**1** in utils.sh
-- Changed SCREENSAVERFILE=$SCREENSAVERFOLDER/**bg_xsmall_ss00**.png
-- Included some changes proposed in the thread
-- Added webhook to have the battery status in Home Assistant, described below  
+## What you need
 
-I'm using this hack in combination with: https://github.com/sibbl/hass-lovelace-kindle-screensaver
+1. A **jailbroken Kindle** with [KUAL](https://www.mobileread.com/forums/showthread.php?t=225030) v2 or later installed.
+2. Wi-Fi.
+3. Images in your screen's exact size, as **8-bit PNG** with no colour profile:
 
+| Kindle | Size |
+|---|---|
+| Basic Kindle (7th gen / KT3), Kindle Touch | 600x800 |
+| Paperwhite 1/2 | 758x1024 |
+| Paperwhite 3/4/5, Kindle 11 and later | 1072x1448 |
 
-Online Screensaver
------------------- 
-v0.3
-by peterson, via mobileread.com
-thanks to the great folks in the Kindle developer corner
+You can test an image on the Kindle with `eips -f -g image.png`. A white screen means the PNG is not clean.
 
-The Online Screensaver automatically fetches a new screensaver image from a
-user-specified URL at a user-specified interval. If a screensaver is shown
-at download time, the downloaded image will be displayed.
+## Quick start (about 5 minutes)
 
-This extension supports updating the screensaver even when the Kindle is 
-asleep (obviously it won't work if you have really powered the Kindle down
-by pressing the power button for many seconds). As such, it will use 
-additional battery as it will un-suspend your Kindle at the configured
-intervals for one or two minutes.
+1. **Download** this repository (green *Code* button, then *Download ZIP*) and unzip it.
+2. **Rename** the unzipped folder to `onlinescreensaver` and copy it to the `extensions` folder of the Kindle, so you end up with `/mnt/us/extensions/onlinescreensaver/` (the file `menu.json` must be directly inside).
+3. **Choose your screen size.** Open `bin/config.sh` in an editor that keeps Unix (LF) line endings, such as Notepad++ or VS Code (not Windows Notepad), and set `SYNC_SIZE`:
+   ```sh
+   SYNC_SIZE="1072x1448"   # or "600x800" for a basic Kindle / Kindle Touch
+   ```
+4. If you cannot reach the default server, change `SYNC_BASE_URI` (a mirror example is in the file) and `TEST_DOMAIN`.
+5. Eject the Kindle. Open **KUAL > Online-Screensaver > Update now**. The images are downloaded to `/mnt/us/extensions/onlinescreensaver/downloaded/`.
+6. **Show them.** Pick one route (next section).
 
-The image should be in the correct resolution of your device, otherwise the
-results may not look so pretty :-) The image also needs to be a "clean" png,
-as otherwise you may only get a white screen (you can test whether an image
-is working by calling "eips -f -g image.png" on your Kindle).
+## Make the images appear on the sleep screen
 
-Possible use cases:
- - download the latest weather report (this was the initial reason this
-   extension was developed), you need a server to automatically create this
-   image - see for example https://github.com/mpetroff/kindle-weather-display
- - download the latest comic each day as your screensaver
- - download inspirational images/messages each day
- - etc
+The default mode only downloads files and changes nothing else. Pick what suits your Kindle:
 
+**A. KOReader (safest, nothing on the system changes).** In KOReader set the sleep-screen image folder to `/mnt/us/extensions/onlinescreensaver/downloaded/`.
 
-Disclaimer
-----------
+**B. Kindle's own sleep screen (system mode).** KUAL > Online-Screensaver > **System screensavers > ON: back up originals, then apply downloads**, then tap **Update now**. It:
+- makes a verified backup of your original screensavers in `extensions/onlinescreensaver/backup_screensavers/` (if that fails, nothing is changed, and an existing complete backup is never overwritten),
+- then copies the downloaded set into `/usr/share/blanket/screensaver`.
 
-As of version 0.3, this extension has only been tested on a Kindle
-Paperwhite 2 with WiFi. The auto-update script is currently only enabled
-for devices with firmware 5 or newer (which should cover the devices that
-actually have a front light).
+If the old images still show, restart the Kindle. To go back: **System screensavers > Restore the original screensavers**. A firmware update can overwrite the system folder; just run *Update now* again (or *Restore*).
 
-If you get this extension to run on your device, please provide feedback
-at http://www.mobileread.com/forums/showthread.php?t=236104 where you will
-also find the latest version.
+## Keep it up to date automatically
 
-How this script interacts with 3G models is also unknown.
+Auto-download is **off by default**, so nothing runs in the background and no battery is used.
 
-It is recommended to test the extension manually prior to activating auto
-updates. To do so, connect to your Kindle via SSH (ref. USBNet) and run
+KUAL > Online-Screensaver > **Auto-download**:
+- **OFF (default)**
+- **Every 24 hours** (enough, since the image set changes once a day)
+- **Apply bin/auto.conf (custom hours)**: create `bin/auto.conf` containing `AUTO_HOURS=8` (1 to 168), then run this entry.
 
-	/mnt/us/extensions/onlinescreensaver/bin/scheduler.sh &
+The first time you pick an interval, a startup file is installed into `/etc/upstart` (this uses `mntroot rw` briefly). The Kindle wakes briefly at each interval to download, which costs some battery. It does not work if the Kindle was fully powered off.
 
-and then exit. If anything should go wrong, rebooting the Kindle should fix
-any problem.
+## KUAL menu
 
-Either way, as usual please be advised that you are using this extension on
-your own risk. 
+| Entry | What it does |
+|---|---|
+| Update now | Download new images once. |
+| System screensavers > ON | Back up the originals, switch system mode on. Run *Update now* to apply. |
+| System screensavers > Restore | Put the originals back, remove the added files, switch system mode off. |
+| Auto-download > OFF / Every 24 hours / Apply bin/auto.conf | Schedule control. |
 
+## Settings (`bin/config.sh`)
 
-Prerequisites
--------------
+| Setting | Meaning |
+|---|---|
+| `SYNC_BASE_URI` | Server folder that holds `meta.json` and the images. When set, `IMAGE_URI` is ignored. |
+| `SYNC_SIZE` | `1072x1448` or `600x800` (see the table above). |
+| `SYNC_DELETE_EXTRA` | `1` (default) removes `bg_ss??.png` files that are not in `meta.json`. |
+| `IMAGE_URI` | Single-image mode: URL of one PNG, used only if `SYNC_BASE_URI` is empty. |
+| `TEST_DOMAIN` | Host pinged to detect a connection (default `www.baidu.com`). |
+| `NETWORK_TIMEOUT` | Seconds to wait for Wi-Fi (raise it if wake-ups time out). |
+| `DISABLE_WIFI` | `1` turns Wi-Fi off after the run. |
+| `LOGGING` / `LOGFILE` | Set `LOGGING=1` to log to `/mnt/us/onlinescreensaver.log`. |
+| `RTC` | Real-time clock used to wake the Kindle (0, 1 or 2; `1` for Kindle Touch). |
+| `WEBHOOKADR` | Optional: send the battery level to Home Assistant (see below). |
+| `TARGET_MODE` | `user` (default) or `system`. Set by the menu, in `bin/target.conf`. |
+| `AUTO_HOURS` | Set by the menu, in `bin/auto.conf`. Do not edit it in `config.sh`. |
 
-* You must have KUAL v2 or later installed.
-* The linkss hack is NOT needed (it cannot be installed on hard-float firmware).
-* By default, the extension downloads the images into its own folder,
-  /mnt/us/extensions/onlinescreensaver/downloaded, and touches nothing else.
-  To make the Kindle's normal sleep screen use them, turn on KUAL >
-  Online-Screensaver > System screensavers > ON (see the section at the top;
-  a backup of the originals is made first).
+Always edit with Unix (LF) line endings, and keep the scripts as POSIX `sh`.
 
+## How folder sync works
 
-Installation
-------------
+`bin/sync.sh` downloads `<SYNC_BASE_URI>/screensavers/<SYNC_SIZE>/meta.json`, then every `bg_ssNN.png` it lists whose MD5 differs from the local copy in `downloaded/`. Nothing is replaced unless all needed files downloaded and passed the MD5 check, so a failed run never leaves a half-updated set. The screen is refreshed only when something changed.
 
-Unzip the downloaded file into the extensions folder (/mnt/us/extensions
-when using SSH, otherwise the extensions folder at root of the Kindle volume
-when connected to your PC).
+The default server publishes a daily pick of 13 images from the [K7Wallpaper](https://github.com/GalaxyGroot/K7Wallpaper) repository, in both sizes.
 
+## Safety rules of system mode (`bin/system.sh`)
 
-Configuration
--------------
+- No write without a verified backup.
+- The system partition is made writable (`mntroot rw`) only when a file really differs, and is always set back to read-only.
+- Every file is written under a temporary name, MD5-checked, then renamed.
+- Free space is checked first, and the downloaded files must still match `meta.json`.
+- `SYSTEM_DELETE_EXTRA=1` (default) removes older `bg_ss??.png` files that are not part of the new set.
 
-Edit onlinescreensaver/bin/config.sh, all available options are described
-here. Note that you MUST use an editor that supports Unix line endings. On
-Windows, use e.g. the free notepad++ application.
+## Status
 
-**EDIT**: Variable WEBHOOKADR sets the possibility to send battery status as json via curl.
-In Home Assistant set the following in configuration.yaml:
-```
+Folder sync and system mode were tested against a local HTTP server and scratch folders with stubbed Kindle commands, and the basic download flow on a real Kindle. System mode has **not** been verified on a device yet. Please report your results by opening an issue.
+
+## Troubleshooting
+
+| Problem | Try |
+|---|---|
+| White or wrong-sized screen | Check size, 8-bit grayscale PNG, no ICC profile; test with `eips -f -g image.png`. |
+| "Update now" does nothing | Set `LOGGING=1`, run again, read `/mnt/us/onlinescreensaver.log`. Check `TEST_DOMAIN` and `SYNC_BASE_URI` are reachable from your network. |
+| Menu entry missing or script fails | Line endings were changed to CRLF. Re-save the files with LF endings. |
+| Old images still show after system mode | Restart the Kindle. |
+| Want the original screens back | *System screensavers > Restore the original screensavers*. |
+
+## Optional: Home Assistant battery webhook
+
+Set `WEBHOOKADR` in `bin/config.sh`, for example `WEBHOOKADR="<HomeAssistantURL>/api/webhook/kindle-battery-update-hook"`. In Home Assistant `configuration.yaml`:
+
+```yaml
 template:
   - trigger:
     - platform: webhook
-      webhook_id: kindle-battery-update-hook # Or whatever you prefer, as defined in config.sh
+      webhook_id: kindle-battery-update-hook # as used in config.sh
     sensor:
     - name: "Kindle Battery"
       state: '{{ trigger.json[''kindle_battery''] }}'
 ```
 
-Use
----
+## Single-image mode (original use)
 
-Run KUAL and enter the "Online-Screensaver" section. Here you have an item
-to update the screensaver right away (one time), and you can also enable or
-disable the auto-download.
+Leave `SYNC_BASE_URI` empty and set `IMAGE_URI` to a PNG of exactly your screen size. Use cases from the original author: the latest weather report (for example with [kindle-weather-display](https://github.com/mpetroff/kindle-weather-display)), a daily comic, inspirational images.
 
+To test by hand before enabling auto-download, connect over SSH (USBNet) and run `/mnt/us/extensions/onlinescreensaver/bin/scheduler.sh &`.
 
-Uninstalling
-------------
+## Uninstall
 
-It is recommended to disable auto-updates prior to deleting the folder
-from the extensions directory.
+1. KUAL > Online-Screensaver > System screensavers > **Restore the original screensavers** (if you used system mode).
+2. KUAL > Online-Screensaver > Auto-download > **OFF**.
+3. Delete `/mnt/us/extensions/onlinescreensaver/`.
+
+## License
+
+MIT. See [LICENSE](LICENSE). Original work by peterson (MobileRead) and poja1993; modifications by GalaxyGroot.
+
+Discussion of the original extension: <https://www.mobileread.com/forums/showthread.php?t=236104>
