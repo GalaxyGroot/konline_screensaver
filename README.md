@@ -82,7 +82,7 @@ The first time you pick an interval, a startup file is installed into `/etc/upst
 | `SYNC_BASE_URI` | Server folder that holds `meta.json` and the images. When set, `IMAGE_URI` is ignored. |
 | `SYNC_SIZE` | `1072x1448` or `600x800` (see the table above). |
 | `SYNC_DELETE_EXTRA` | `1` (default) removes `bg_ss??.png` files that are not in `meta.json`. |
-| `IMAGE_URI` | Single-image mode: URL of one PNG, used only if `SYNC_BASE_URI` is empty. |
+| `IMAGE_URI` | URL of one PNG, used only if `SYNC_BASE_URI` is empty. |
 | `TEST_DOMAIN` | Host pinged to detect a connection (default `www.baidu.com`). |
 | `NETWORK_TIMEOUT` | Seconds to wait for Wi-Fi (raise it if wake-ups time out). |
 | `DISABLE_WIFI` | `1` turns Wi-Fi off after the run. |
@@ -135,12 +135,6 @@ template:
     - name: "Kindle Battery"
       state: '{{ trigger.json[''kindle_battery''] }}'
 ```
-
-## Single-image mode (original use)
-
-Leave `SYNC_BASE_URI` empty and set `IMAGE_URI` to a PNG of exactly your screen size. Use cases from the original author: the latest weather report (for example with [kindle-weather-display](https://github.com/mpetroff/kindle-weather-display)), a daily comic, inspirational images.
-
-To test by hand before enabling auto-download, connect over SSH (USBNet) and run `/mnt/us/extensions/onlinescreensaver/bin/scheduler.sh &`.
 
 ## Uninstall
 
