@@ -15,11 +15,11 @@ Preview today's images: <https://pkw-images.daofa.workers.dev/sites/>
 ```mermaid
 flowchart LR
     S1["Copy folder to<br/>/mnt/us/extensions/<br/>onlinescreensaver"] --> S2["Set SYNC_SIZE<br/>in bin/config.sh"]
-    S2 --> S3["KUAL: Update now<br/>(first download)"]
+    S2 --> S3["Online-Screensaver menu:<br/>Update now (first download)"]
     S3 --> S4{"Show images how?"}
     S4 -- "A: KOReader" --> S5["Point KOReader at<br/>downloaded/ folder"]
     S4 -- "B: system mode" --> S6["System screensavers ON<br/>(backs up originals)<br/>then Update now"]
-    S5 --> S7["KUAL: Remove ads now<br/>(Kindle reboots)"]
+    S5 --> S7["Online-Screensaver menu:<br/>Remove ads now (Kindle reboots)"]
     S6 --> S7
 ```
 
@@ -27,7 +27,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    A["Web server<br/>pkw-images.daofa.workers.dev<br/>new set of 13 images every 24 h"] -- "Wi-Fi" --> B["KUAL: Update now<br/>or Auto-download"]
+    A["Web server<br/>pkw-images.daofa.workers.dev<br/>new set of 13 images every 24 h"] -- "Wi-Fi" --> B["Online-Screensaver menu:<br/>Update now or Auto-download"]
     B -- "sync.sh: download only<br/>changed files, check MD5" --> C["extensions/onlinescreensaver/<br/>downloaded/"]
     C -- "route A (default)" --> D["KOReader sleep screen<br/>reads that folder"]
     C -- "route B: system mode" --> E["/usr/share/blanket/screensaver<br/>(original already backed up)"]
@@ -59,7 +59,7 @@ flowchart LR
 
 ## Automatic updates
 
-Off by default (no background work, no battery use). **KUAL > Auto-download**: *OFF*, *Every 24 hours* (enough, the set changes daily), or *Apply bin/auto.conf* (create `bin/auto.conf` with `AUTO_HOURS=8`, 1 to 168). The first time, a startup file is installed in `/etc/upstart` (brief `mntroot rw`). The Kindle wakes briefly each interval; it does not work if fully powered off.
+Off by default (no background work, no battery use). **KUAL > Online-Screensaver > Auto-download**: *OFF*, *Every 24 hours* (enough, the set changes daily), or *Apply bin/auto.conf* (create `bin/auto.conf` with `AUTO_HOURS=8`, 1 to 168). The first time, a startup file is installed in `/etc/upstart` (brief `mntroot rw`). The Kindle wakes briefly each interval; it does not work if fully powered off.
 
 ## KUAL menu
 
