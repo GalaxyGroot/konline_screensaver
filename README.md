@@ -2,8 +2,7 @@
 
 **A fresh sleep screen on your Kindle every day, with no computer involved.**
 
-A [KUAL](https://www.mobileread.com/forums/showthread.php?t=225030) extension for jailbroken Kindles. It downloads a daily set of screensaver images over Wi-Fi, checks every file by MD5, and keeps the set up to date. It works on **hard-float firmware** (e.g. 5.18.x), where the classic `linkss` hack cannot be installed.
-
+A [KUAL](https://www.mobileread.com/forums/showthread.php?t=225030) extension for jailbroken Kindles. It downloads a daily set of screensaver images over Wi-Fi, checks every file by MD5, and keeps the set up to date.
 Preview today's images: <https://pkw-images.daofa.workers.dev/sites/>
 
 > Use at your own risk: this changes files on your Kindle. Folder sync was tested on a real Kindle; system mode only against scratch folders (see [Status](#status)). Restarting the Kindle fixes most problems, and **Restore the original screensavers** undoes system mode.
@@ -106,5 +105,5 @@ Folder sync and system mode were tested against a local HTTP server and scratch 
 ## Credits and license
 
 - **peterson** ([MobileRead thread](https://www.mobileread.com/forums/showthread.php?t=236104)): original *Online Screensaver* (v0.3) and the scheduler/RTC wake-up logic.
-- **GalaxyGroot**: this fork (folder sync, system mode with backup/restore, simple auto-download menu).
+
 MIT. See [LICENSE](LICENSE).
