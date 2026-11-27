@@ -15,6 +15,11 @@
 						{"name": "Every 24 hours",                       "priority":2, "action": "bin/set-hours.sh 24"},
 						{"name": "Apply bin/auto.conf (custom hours)",   "priority":3, "action": "bin/set-hours.sh"}
 					]
+				},
+				{"name": "Disable lock-screen ads",                      "priority":3,
+					"items": [
+						{"name": "Remove ads now (Kindle reboots)",      "priority":1, "action": "bin/disable-ads.sh"}
+					]
 				}
 			]
 		}
