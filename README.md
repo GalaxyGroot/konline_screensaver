@@ -5,7 +5,7 @@
 A [KUAL](https://www.mobileread.com/forums/showthread.php?t=225030) extension for jailbroken Kindles. It downloads a daily set of screensaver images over Wi-Fi, checks every file by MD5, and keeps the set up to date.
 Preview today's images: <https://pkw-images.daofa.workers.dev/sites/>
 
-> Use at your own risk: this changes files on your Kindle. Folder sync was tested on a real Kindle; system mode only against scratch folders (see [Status](#status)). Restarting the Kindle fixes most problems, and **Restore the original screensavers** undoes system mode.
+> Use at your own risk: this changes files on your Kindle. System mode is not yet verified on a real device. Restarting the Kindle fixes most problems, and **Restore the original screensavers** undoes system mode.
 
 ## How it works
 
@@ -91,10 +91,6 @@ Off by default (no background work, no battery use). **KUAL > Online-Screensaver
 - The system partition is writable only while a file really differs, then set back to read-only.
 - Each file is written under a temp name, MD5-checked, then renamed.
 - Free space is checked first, and downloads must still match `meta.json`.
-
-## Status
-
-Folder sync and system mode were tested against a local HTTP server and scratch folders with stubbed Kindle commands, and the basic download flow on a real Kindle. System mode is **not yet verified on a device**. Please report results in an issue.
 
 ## Uninstall
 
