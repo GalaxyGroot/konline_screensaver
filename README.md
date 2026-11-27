@@ -8,29 +8,29 @@ Preview today's images: <https://pkw-images.daofa.workers.dev/sites/>
 
 > Use at your own risk: this changes files on your Kindle. Folder sync was tested on a real Kindle; system mode only against scratch folders (see [Status](#status)). Restarting the Kindle fixes most problems, and **Restore the original screensavers** undoes system mode.
 
-## How it updates your wallpaper
+## How it works
+
+**One-time setup** (you do this once):
 
 ```mermaid
 flowchart LR
-    A["Daily pick of 13 images<br/>(new set every 24 h)"] --> B["Web server<br/>pkw-images.daofa.workers.dev<br/>600x800 + 1072x1448 + meta.json"]
-    B -- "Wi-Fi" --> C["KUAL: Update now<br/>or Auto-download"]
-    C -- "sync.sh: download only<br/>changed files, check MD5" --> D["/mnt/us/extensions/<br/>onlinescreensaver/downloaded/"]
-    D -- "route A (default)" --> E["KOReader sleep screen<br/>reads that folder"]
-    D -- "route B: system mode<br/>(backup first)" --> F["/usr/share/blanket/screensaver<br/>Kindle's own sleep screen"]
+    S1["Copy folder to<br/>/mnt/us/extensions/<br/>onlinescreensaver"] --> S2["Set SYNC_SIZE<br/>in bin/config.sh"]
+    S2 --> S3["KUAL: Update now<br/>(first download)"]
+    S3 --> S4{"Show images how?"}
+    S4 -- "A: KOReader" --> S5["Point KOReader at<br/>downloaded/ folder"]
+    S4 -- "B: system mode" --> S6["System screensavers ON<br/>(backs up originals)<br/>then Update now"]
+    S5 --> S7["KUAL: Remove ads now<br/>(Kindle reboots)"]
+    S6 --> S7
 ```
 
-Plain text version:
+**Daily usage** (automatic if Auto-download is on, or tap *Update now*):
 
-```
-Daily pick --> web server --Wi-Fi--> KUAL "Update now" / Auto-download
-                                                              |
-                                              sync.sh: download changed files, MD5 check
-                                                              |
-                                                 extensions/onlinescreensaver/downloaded/
-                                                    |                              |
-                                          A: KOReader reads it       B: system mode copies it to
-                                             (nothing else changes)     /usr/share/blanket/screensaver
-                                                                         (original backed up first)
+```mermaid
+flowchart LR
+    A["Web server<br/>pkw-images.daofa.workers.dev<br/>new set of 13 images every 24 h"] -- "Wi-Fi" --> B["KUAL: Update now<br/>or Auto-download"]
+    B -- "sync.sh: download only<br/>changed files, check MD5" --> C["extensions/onlinescreensaver/<br/>downloaded/"]
+    C -- "route A (default)" --> D["KOReader sleep screen<br/>reads that folder"]
+    C -- "route B: system mode" --> E["/usr/share/blanket/screensaver<br/>(original already backed up)"]
 ```
 
 ## What you need
@@ -55,6 +55,7 @@ Daily pick --> web server --Wi-Fi--> KUAL "Update now" / Auto-download
 4. Show them, with one of two routes:
    - **A. KOReader (safest):** set KOReader's sleep-screen image folder to `/mnt/us/extensions/onlinescreensaver/downloaded/`.
    - **B. Kindle's own sleep screen:** **System screensavers > ON: back up originals, then apply downloads**, then **Update now**. If old images still show, restart the Kindle. To undo: **System screensavers > Restore the original screensavers**.
+5. **Block the ads (do this once, or the ads come back):** **KUAL > Online-Screensaver > Disable lock-screen ads > Remove ads now**. The Kindle reboots. If ads show up again later (for example after a firmware update), run it again.
 
 ## Automatic updates
 
