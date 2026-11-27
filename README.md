@@ -12,7 +12,7 @@ Preview today's images: <https://pkw-images.daofa.workers.dev/sites/>
 
 ```mermaid
 flowchart LR
-    A["K7Wallpaper repo<br/>(GitHub)"] -- "Action, every 24 h:<br/>pick 13 images" --> B["Cloudflare site<br/>pkw-images.daofa.workers.dev<br/>600x800 + 1072x1448 + meta.json"]
+    A["Daily pick of 13 images<br/>(new set every 24 h)"] --> B["Web server<br/>pkw-images.daofa.workers.dev<br/>600x800 + 1072x1448 + meta.json"]
     B -- "Wi-Fi" --> C["KUAL: Update now<br/>or Auto-download"]
     C -- "sync.sh: download only<br/>changed files, check MD5" --> D["/mnt/us/extensions/<br/>onlinescreensaver/downloaded/"]
     D -- "route A (default)" --> E["KOReader sleep screen<br/>reads that folder"]
@@ -22,7 +22,7 @@ flowchart LR
 Plain text version:
 
 ```
-GitHub repo --(daily pick)--> Cloudflare site --Wi-Fi--> KUAL "Update now" / Auto-download
+Daily pick --> web server --Wi-Fi--> KUAL "Update now" / Auto-download
                                                               |
                                               sync.sh: download changed files, MD5 check
                                                               |
@@ -105,6 +105,5 @@ Folder sync and system mode were tested against a local HTTP server and scratch 
 ## Credits and license
 
 - **peterson** ([MobileRead thread](https://www.mobileread.com/forums/showthread.php?t=236104)): original *Online Screensaver* (v0.3) and the scheduler/RTC wake-up logic.
-- **GalaxyGroot**: this fork (folder sync, system mode with backup/restore, simple auto-download menu). Images come from [K7Wallpaper](https://github.com/GalaxyGroot/K7Wallpaper).
-
+- **GalaxyGroot**: this fork (folder sync, system mode with backup/restore, simple auto-download menu).
 MIT. See [LICENSE](LICENSE).
